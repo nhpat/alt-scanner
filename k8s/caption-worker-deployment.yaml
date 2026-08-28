@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: caption-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: caption-worker
+  template:
+    metadata:
+      labels:
+        app: caption-worker
+    spec:
+      containers:
+        - name: caption-worker
+          image: image-processing-project-caption-worker:latest
+          imagePullPolicy: Never
+          envFrom:
+            - configMapRef:
+                name: pipeline-config
+            - secretRef:
+                name: anthropic-secret

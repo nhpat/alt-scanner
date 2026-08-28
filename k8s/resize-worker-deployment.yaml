@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resize-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: resize-worker
+  template:
+    metadata:
+      labels:
+        app: resize-worker
+    spec:
+      containers:
+        - name: resize-worker
+          image: image-processing-project-resize-worker:latest
+          imagePullPolicy: Never
+          envFrom:
+            - configMapRef:
+                name: pipeline-config
+          resources:
+            requests:
+              cpu: 250m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
