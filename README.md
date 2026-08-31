@@ -202,12 +202,4 @@ All 61 jobs in the batch (60 load-test + 1 earlier manual test) reached `status:
 --------+-------
  done   |    61
 ```
-
 This confirms the resize worker scales out under real CPU pressure and scales back in automatically once the queue drains — HPA's default 5-minute scale-down stabilization window is what keeps it from flapping back down immediately after the spike.
-
-## Stretch Goals (not yet implemented)
-
-- Content moderation/tagging as a third worker stage, reusing the caption worker's Claude API pattern
-- KEDA for queue-depth-based scaling on the caption worker instead of CPU
-- Simple frontend status page (upload form + polling job status)
-- Grafana dashboard for pod count / queue depth over time during load test
