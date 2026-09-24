@@ -174,32 +174,3 @@ CREATE TABLE jobs (
    kubectl port-forward svc/api 8080:8000
    curl -X POST -F "file=@your-image.jpg" http://localhost:8080/upload
    ```
-
-## Load Testing & Autoscaling Results
-
-`loadtest/batch_upload.py` fires N concurrent uploads of a large (3000x3000) test image at the API, generating a burst of CPU-bound resize work.
-
-```
-.venv/bin/python loadtest/batch_upload.py --url http://localhost:8080 --count 60 --concurrency 30 --image-size 3000
-```
-
-All 60 uploads completed in 1.8s (the API just accepts and queues); the real load lands on the resize worker afterward as it works through the backlog.
-
-**Observed HPA behavior** (`kubectl get hpa resize-worker-hpa -w`), target 65% CPU utilization on a 250m request:
-
-| Time     | CPU        | Replicas |
-|----------|------------|----------|
-| t+0s     | 0%/65%     | 1        |
-| t+20s    | **92%/65%** | 1 → **2** (scale-up triggered) |
-| t+30s    | 0%/65%     | 2        |
-| ...      | 0%/65%     | 2 (steady while backlog drains) |
-| ~5 min later | 0%/65% | **2 → 1** (scale-down, after HPA's default stabilization window) |
-
-All 61 jobs in the batch (60 load-test + 1 earlier manual test) reached `status: done` with real Postgres row counts confirming it:
-
-```
- status | count
---------+-------
- done   |    61
-```
-This confirms the resize worker scales out under real CPU pressure and scales back in automatically once the queue drains — HPA's default 5-minute scale-down stabilization window is what keeps it from flapping back down immediately after the spike.
