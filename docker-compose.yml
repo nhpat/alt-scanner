@@ -6,7 +6,7 @@ services:
       POSTGRES_PASSWORD: pipeline
       POSTGRES_DB: pipeline
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
@@ -96,6 +96,36 @@ services:
         condition: service_healthy
       minio:
         condition: service_healthy
+
+  crawl-worker:
+    build: ./workers/crawl
+    environment:
+      DATABASE_URL: postgresql://pipeline:pipeline@postgres:5432/pipeline
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  alttext-worker:
+    build: ./workers/alttext
+    environment:
+      DATABASE_URL: postgresql://pipeline:pipeline@postgres:5432/pipeline
+      REDIS_URL: redis://redis:6379/0
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
 
 volumes:
   postgres-data:

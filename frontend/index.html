@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Alt-Text Scanner</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Alt-Text Scanner</h1>
+    <p class="subtitle">scan a page for images with missing or bad alt text, get AI-suggested fixes</p>
+  </header>
+
+  <main>
+    <section>
+      <form id="scan-form">
+        <input type="url" id="scan-url-input" placeholder="https://example.com/page" required />
+        <button type="submit" id="scan-btn">Scan</button>
+      </form>
+      <p id="scan-status"></p>
+      <div id="scan-results" hidden>
+        <div class="scan-results-header">
+          <span id="scan-summary" hidden></span>
+          <a id="scan-csv-link" href="#" hidden>Download CSV</a>
+        </div>
+        <div id="findings-list" class="findings-list"></div>
+      </div>
+
+      <div class="jobs-header" style="margin-top: 2rem;">
+        <h3>Scan History</h3>
+        <button id="scan-history-refresh-btn" type="button">Refresh</button>
+      </div>
+      <div id="scan-history-list" class="scan-history-list"></div>
+    </section>
+
+    <details id="pipeline-demo">
+      <summary>Image Processing Pipeline (demo)</summary>
+      <div class="details-content">
+        <section>
+          <form id="upload-form">
+            <label id="dropzone" for="file-input">
+              <div id="dropzone-empty">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                  <path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <p><strong>Click to choose</strong> or drag an image here</p>
+              </div>
+              <div id="dropzone-preview" hidden>
+                <img id="preview-img" alt="selected file preview" />
+                <span id="preview-name"></span>
+              </div>
+              <input type="file" id="file-input" accept="image/*" required hidden />
+            </label>
+            <button type="submit" id="upload-btn">Upload</button>
+          </form>
+          <p id="upload-status"></p>
+        </section>
+
+        <section>
+          <div class="jobs-header">
+            <h2>Jobs</h2>
+            <div class="jobs-header-actions">
+              <button id="clear-jobs-btn" type="button" class="danger-btn">Clear all</button>
+              <button id="refresh-btn" type="button">Refresh</button>
+            </div>
+          </div>
+          <div id="jobs-list" class="jobs-grid"></div>
+        </section>
+      </div>
+    </details>
+  </main>
+
+  <div id="lightbox" hidden>
+    <button id="lightbox-close" type="button" aria-label="Close">&times;</button>
+    <img id="lightbox-img" alt="" />
+    <div id="lightbox-caption"></div>
+    <a id="lightbox-download" download>Download</a>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
