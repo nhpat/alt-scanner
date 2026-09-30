@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Scan History</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="header-top">
+      <div>
+        <h1>Scan History</h1>
+        <p class="subtitle">every page you've scanned, newest first</p>
+      </div>
+      <a href="index.html" class="history-link">&larr; Back to Scanner</a>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <div class="jobs-header">
+        <h2>All Scans</h2>
+        <div class="jobs-header-actions">
+          <button id="clear-scans-btn" type="button" class="danger-btn">Clear all</button>
+          <button id="history-refresh-btn" type="button">Refresh</button>
+        </div>
+      </div>
+      <div id="full-history-list" class="scan-history-list"></div>
+    </section>
+
+    <section id="history-detail" hidden>
+      <div class="scan-results-header">
+        <h2 id="history-detail-title"></h2>
+        <a id="history-detail-csv" href="#">Download CSV</a>
+      </div>
+      <div id="history-detail-findings" class="findings-list"></div>
+    </section>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="history.js"></script>
+</body>
+</html>

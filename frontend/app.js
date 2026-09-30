@@ -27,8 +27,6 @@ const scanResults = document.getElementById("scan-results");
 const scanSummary = document.getElementById("scan-summary");
 const scanCsvLink = document.getElementById("scan-csv-link");
 const findingsList = document.getElementById("findings-list");
-const scanHistoryList = document.getElementById("scan-history-list");
-const scanHistoryRefreshBtn = document.getElementById("scan-history-refresh-btn");
 
 const pollTimers = new Map();
 let scanPollTimer = null;
@@ -304,7 +302,6 @@ async function pollScan(scanId) {
       if (scan.status !== "scanning") {
         clearInterval(scanPollTimer);
         scanPollTimer = null;
-        loadScanHistory();
       }
     } catch (err) {
       console.error(err);
@@ -314,42 +311,6 @@ async function pollScan(scanId) {
   await tick();
   scanPollTimer = setInterval(tick, POLL_INTERVAL_MS);
 }
-
-function scanStatusLabel(status) {
-  return status === "scanning" ? "scanning" : status;
-}
-
-function scanHistoryRowHtml(scan) {
-  const badgeStatus = scan.status === "scanning" ? "pending" : scan.status;
-  return `
-    <div class="scan-history-row" data-scan-id="${scan.id}">
-      <div class="scan-history-url">${scan.root_url}</div>
-      <div class="scan-history-meta">
-        <span class="job-status status-${badgeStatus}">${scanStatusLabel(scan.status)}</span>
-        <span>${scan.pages_scanned} page${scan.pages_scanned === 1 ? "" : "s"}, ${scan.images_found} flagged</span>
-      </div>
-    </div>
-  `;
-}
-
-async function loadScanHistory() {
-  try {
-    const res = await fetch(`${API_BASE_URL}/scans`);
-    if (!res.ok) throw new Error("scan history fetch failed");
-    const scans = await res.json();
-    scanHistoryList.innerHTML = scans.map(scanHistoryRowHtml).join("") || "<p>No scans yet.</p>";
-  } catch (err) {
-    scanHistoryList.innerHTML = `<p class="job-error">Failed to load scan history: ${err.message}</p>`;
-  }
-}
-
-scanHistoryList.addEventListener("click", (event) => {
-  const row = event.target.closest(".scan-history-row");
-  if (!row) return;
-  pollScan(row.dataset.scanId);
-});
-
-scanHistoryRefreshBtn.addEventListener("click", loadScanHistory);
 
 scanForm.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -372,7 +333,6 @@ scanForm.addEventListener("submit", async (event) => {
       throw new Error(body.detail || `scan failed (${res.status})`);
     }
     const { scan_id } = await res.json();
-    await loadScanHistory();
     await pollScan(scan_id);
   } catch (err) {
     scanStatus.textContent = `Error: ${err.message}`;
@@ -380,5 +340,3 @@ scanForm.addEventListener("submit", async (event) => {
     scanBtn.disabled = false;
   }
 });
-
-loadScanHistory();

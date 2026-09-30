@@ -39,6 +39,30 @@ h1 {
   letter-spacing: -0.02em;
 }
 
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.history-link {
+  flex-shrink: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-weight: 500;
+  font-size: 0.88rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.history-link:hover {
+  background: var(--surface-hover);
+}
+
 .subtitle {
   color: var(--text-dim);
   margin: 0.35rem 0 0;

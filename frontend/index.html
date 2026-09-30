@@ -7,8 +7,13 @@
 </head>
 <body>
   <header>
-    <h1>Alt-Text Scanner</h1>
-    <p class="subtitle">scan a page for images with missing or bad alt text, get AI-suggested fixes</p>
+    <div class="header-top">
+      <div>
+        <h1>Alt-Text Scanner</h1>
+        <p class="subtitle">scan a page for images with missing or bad alt text, get AI-suggested fixes</p>
+      </div>
+      <a href="history.html" class="history-link">History</a>
+    </div>
   </header>
 
   <main>
@@ -25,16 +30,10 @@
         </div>
         <div id="findings-list" class="findings-list"></div>
       </div>
-
-      <div class="jobs-header" style="margin-top: 2rem;">
-        <h3>Scan History</h3>
-        <button id="scan-history-refresh-btn" type="button">Refresh</button>
-      </div>
-      <div id="scan-history-list" class="scan-history-list"></div>
     </section>
 
     <details id="pipeline-demo">
-      <summary>Image Processing Pipeline (demo)</summary>
+      <summary>Image Processing Pipeline</summary>
       <div class="details-content">
         <section>
           <form id="upload-form">

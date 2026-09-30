@@ -195,12 +195,21 @@ def list_scans():
         rows = conn.execute(
             """
             SELECT id, root_url, status, pages_scanned, images_found, created_at
-            FROM scans ORDER BY created_at DESC LIMIT 50
+            FROM scans ORDER BY created_at DESC LIMIT 200
             """
         ).fetchall()
 
     columns = ["id", "root_url", "status", "pages_scanned", "images_found", "created_at"]
     return [dict(zip(columns, [str(v) if v is not None else None for v in row])) for row in rows]
+
+
+@app.delete("/scans")
+def clear_scans():
+    with get_db() as conn:
+        count = conn.execute("SELECT COUNT(*) FROM scans").fetchone()[0]
+        conn.execute("DELETE FROM scans")  # image_findings cascade-deletes via FK
+
+    return {"deleted": count}
 
 
 @app.get("/scans/{scan_id}")
